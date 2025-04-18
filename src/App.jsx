@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Admin from './admin/Admin';
 
 function App() {
   return (
-    <>
-      <h1>Hello</h1>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </Router>
   );
 }
 
