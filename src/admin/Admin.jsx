@@ -6,6 +6,7 @@ function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [url, setUrl] = useState('');
+  const [description, setDescription] = useState();
   const [code, setCode] = useState('');
   const [fileError, setFileError] = useState('');
 
@@ -35,21 +36,22 @@ function Admin() {
     const payload = {
       url,
       code,
-      createdAt: new Date().toISOString()
+      description,
+      createdAt: new Date().toISOString(),
     };
 
     try {
       const response = await fetch(`${configs.API_URL}/submit/${password}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
       console.log('Success:', data);
-      alert(data.message || "Something went wrong!");
+      alert(data.status === 'ok' ? 'Success' : 'Something went wrong!');
     } catch (error) {
       console.error('Error:', error);
       alert('Submission failed.');
@@ -92,10 +94,7 @@ function Admin() {
       )}
 
       {authenticated && showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow mt-6 max-w-2xl"
-        >
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mt-6 max-w-2xl">
           <div className="mb-4">
             <label className="block font-medium mb-1">URL to host:</label>
             <input
@@ -118,13 +117,18 @@ function Admin() {
           </div>
 
           <div className="mb-4">
-            <label className="block font-medium mb-1">Or upload .txt file:</label>
-            <input
-              type="file"
-              accept=".txt"
-              onChange={handleFileUpload}
-              className="block"
+            <label className="block font-medium mb-1">Describe your page:</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={10}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-medium mb-1">Or upload .txt file:</label>
+            <input type="file" accept=".txt" onChange={handleFileUpload} className="block" />
             {fileError && <p className="text-red-600 mt-1">{fileError}</p>}
           </div>
 
