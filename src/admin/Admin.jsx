@@ -19,6 +19,24 @@ function Admin() {
     }
   };
 
+  const reloadDynamicRoutes = async (password) => {
+    try {
+      const res = await fetch(`${configs.API_URL}/reload/${password}`, {
+        method: 'POST',
+      });
+  
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Reload failed');
+  
+      console.log('✅ Dynamic routes reloaded:', data.message);
+      return { success: true, message: data.message };
+    } catch (err) {
+      console.error('❌ Failed to reload dynamic routes:', err.message);
+      return { success: false, message: err.message };
+    }
+  };
+  
+
   const fetchComponents = async () => {
     try {
       const res = await fetch(`${configs.API_URL}/all-components`);
@@ -67,6 +85,7 @@ function Admin() {
         setUrl('');
         setCode('');
         setDescription('');
+        reloadDynamicRoutes(password);
       }
     } catch (error) {
       console.error('Error:', error);
